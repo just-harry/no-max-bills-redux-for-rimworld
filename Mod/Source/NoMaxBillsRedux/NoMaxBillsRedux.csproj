@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<LangVersion>12.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<AssemblySearchPaths>
+			$(AssemblyPath);
+			$(AssemblySearchPaths)
+		</AssemblySearchPaths>
+		<DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="mscorlib"></Reference>
+		<Reference Include="System"></Reference>
+		<Reference Include="System.Core"></Reference>
+		<Reference Include="System.Xml"></Reference>
+		<Reference Include="0Harmony"></Reference>
+		<Reference Include="Assembly-CSharp"></Reference>
+		<Reference Include="UnityEngine"></Reference>
+		<Reference Include="UnityEngine.CoreModule"></Reference>
+		<Reference Include="UnityEngine.IMGUIModule"></Reference>
+		<Reference Include="UnityEngine.TextRenderingModule"></Reference>
+	</ItemGroup>
+</Project>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>No Max Bills: Redux</name>
+	<author>"Just Harry"</author>
+	<packageId>justharry.nomaxbillsredux</packageId>
+	<supportedVersions>
+		<li>1.6</li>
+	</supportedVersions>
+	<modVersion>1.0.0</modVersion>
+	<modDependencies>
+		<li>
+			<packageId>brrainz.harmony</packageId>
+			<displayName>Harmony</displayName>
+			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+		</li>
+	</modDependencies>
+	<description>Workbenches, in the UI, are limited to no-more-than fifteen bills each; this mod removes that limit.
+
+This is a recreation of KiameV's "No Max Bills" mod, which can be found at https://steamcommunity.com/sharedfiles/filedetails/?id=1588831229.
+
+The source-code for this mod can be found at https://github.com/just-harry/no-max-bills-redux-for-rimworld.
+	</description>
+</ModMetaData>
+

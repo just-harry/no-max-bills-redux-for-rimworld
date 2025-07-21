@@ -46,7 +46,8 @@ namespace NoMaxBillsRedux
 
 		[HarmonyTranspiler]
 		static public IEnumerable<CodeInstruction> RaiseBillCountLimit (
-			IEnumerable<CodeInstruction> theInstructions
+			IEnumerable<CodeInstruction> theInstructions,
+			MethodBase method
 		)
 		{
 			/* Here we're looking for a piece of code that looks like:
@@ -90,7 +91,7 @@ namespace NoMaxBillsRedux
 				yield break;
 			}
 
-			throw new TranspilerFailedException("The transpiler patch for `BillStack.DoListing` failed to apply.");
+			throw new TranspilerFailedException($"The transpiler patch for `{method.DeclaringType?.FullName}.{method.Name}` failed to apply.");
 		}
 	}
 

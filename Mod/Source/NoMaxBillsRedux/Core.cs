@@ -96,6 +96,90 @@ namespace NoMaxBillsRedux
 	}
 
 
+	/* falconne's "Better Workbench Management" mod uses the vanilla bill-count limit
+	   unless it detects the presence of KiameV's "No Max Bills" mod,
+	   in which case it raises the limit to 125.
+	   Thus, if WE detect "Better Workbench Management", we'll raise its limit to 0x7FFFFFFF.
+	   (See https://github.com/Falconne/ImprovedWorkbenches/commit/eadd3ad3bd56f73b9928b9523543818ca44a87ce). */
+	[HarmonyPatch]
+	public static class RaiseBillCountLimitForImprovedWorkbenches
+	{
+		[HarmonyTargetMethods]
+		static public IEnumerable<MethodBase> MethodsFromImprovedWorkbenches ()
+		{
+			MethodBase? getMaxBills = null;
+
+			try
+			{
+				getMaxBills = GenTypes.GetTypeInAnyAssembly("ImprovedWorkbenches.Main").GetMethod(
+					"GetMaxBills",
+					BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+					null,
+					new Type[0],
+					null
+				);
+			}
+			catch (Exception)
+			{}
+
+			if (getMaxBills != null)
+			{
+				yield return getMaxBills;
+			}
+		}
+
+		[HarmonyTranspiler]
+		static public IEnumerable<CodeInstruction> RaiseBillCountLimit (
+			IEnumerable<CodeInstruction> theInstructions,
+			MethodBase method
+		)
+		{
+			/* Here we're looking for a piece of code that looks like:
+					... 125 ...
+			   and replacing it with some code that looks like this:
+					... 0x7FFFFFFF ...
+			*/
+
+			using IEnumerator<CodeInstruction> instructions = theInstructions.GetEnumerator();
+
+			uint patchStage = 0;
+
+			CodeInstruction instruction;
+		findLoadOfMaxCount:
+			if (!instructions.MoveNext()) goto noMoreInstructions;
+			instruction = instructions.Current;
+
+			if (!instruction.LoadsIntegerValue(125))
+			{
+				yield return instruction;
+
+				goto findLoadOfMaxCount;
+			}
+
+			instruction.opcode = OpCodes.Ldc_I4;
+			instruction.operand = 0x7FFFFFFF;
+
+			yield return instruction;
+
+			++patchStage;
+		yieldRestOfCode:
+			if (!instructions.MoveNext()) goto noMoreInstructions;
+			instruction = instructions.Current;
+
+			yield return instruction;
+
+			goto yieldRestOfCode;
+		noMoreInstructions:
+			if (patchStage == 1)
+			{
+				yield break;
+			}
+
+			throw new TranspilerFailedException($"The transpiler patch for `{method.DeclaringType?.FullName}.{method.Name}` failed to apply.");
+		}
+	}
+
+
 	internal static class CodeInstructionExtensions
 	{
 		internal static bool LoadsIntegerValue (this CodeInstruction instruction)

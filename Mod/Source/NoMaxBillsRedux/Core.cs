@@ -35,7 +35,7 @@ namespace NoMaxBillsRedux
 
 
 	[HarmonyPatch]
-	public static class RaiseBillCountLimitForBillStackingListing
+	public static class RaiseBillCountLimitForVanillaBillStackMethods
 	{
 		[HarmonyTargetMethods]
 		static public IEnumerable<MethodBase> BillStackMaxCountRespecters ()

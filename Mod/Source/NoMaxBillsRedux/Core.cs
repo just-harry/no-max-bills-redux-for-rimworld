@@ -71,7 +71,10 @@ namespace NoMaxBillsRedux
 				goto findLoadOfMaxCount;
 			}
 
-			yield return new CodeInstruction(OpCodes.Ldc_I4, 0x7FFFFFFF);
+			instruction.opcode = OpCodes.Ldc_I4;
+			instruction.operand = 0x7FFFFFFF;
+
+			yield return instruction;
 
 			++patchStage;
 		yieldRestOfCode:

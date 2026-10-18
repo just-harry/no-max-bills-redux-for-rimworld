@@ -15,7 +15,7 @@ namespace NoMaxBillsRedux
 	{
 		public NoMaxBillsReduxMod (ModContentPack contentPack) : base(contentPack)
 		{
-			new Harmony("com.just-harry.no-max-bills-redux").PatchAll();
+			new Harmony("com.just-harry.no-max-bills-redux").PatchAll(typeof(NoMaxBillsReduxMod).Assembly);
 		}
 	}
 
@@ -104,28 +104,22 @@ namespace NoMaxBillsRedux
 	[HarmonyPatch]
 	public static class RaiseBillCountLimitForImprovedWorkbenches
 	{
-		[HarmonyTargetMethods]
-		static public IEnumerable<MethodBase> MethodsFromImprovedWorkbenches ()
+		[HarmonyPrepare]
+		static public bool Prepare ()
 		{
-			MethodBase? getMaxBills = null;
+			return MethodFromImprovedWorkbenches() != null;
+		}
 
-			try
-			{
-				getMaxBills = GenTypes.GetTypeInAnyAssembly("ImprovedWorkbenches.Main").GetMethod(
-					"GetMaxBills",
-					BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
-					null,
-					new Type[0],
-					null
-				);
-			}
-			catch (Exception)
-			{}
-
-			if (getMaxBills != null)
-			{
-				yield return getMaxBills;
-			}
+		[HarmonyTargetMethod]
+		static public MethodBase? MethodFromImprovedWorkbenches ()
+		{
+			return GenTypes.GetTypeInAnyAssembly("ImprovedWorkbenches.Main")?.GetMethod(
+				"GetMaxBills",
+				BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+				null,
+				Type.EmptyTypes,
+				null
+			);
 		}
 
 		[HarmonyTranspiler]
